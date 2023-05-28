@@ -1,0 +1,46 @@
+module dFlipFlopWithReset (
+  input wire clk,
+  input wire reset,
+  input wire d,
+  output reg q
+);
+
+  always @(posedge clk or negedge reset) begin
+    if (!reset) begin
+      q <= 1'b0;
+    end else begin
+      q <= d;
+    end
+  end
+endmodule
+
+module testbench;
+  reg clk, reset, d;
+  wire q;
+
+  dFlipFlopWithReset dut (
+    .clk(clk),
+    .reset(reset),
+    .d(d),
+    .q(q)
+  );
+
+  initial begin
+    clk = 0;
+    reset = 1;
+    d = 0;
+    #10 reset = 0;
+    #5 d = 1;
+    #5 d = 0;
+    #5 d = 1;
+    #5 reset = 1;
+    #10 reset = 0;
+    #5 d = 0;
+    #5 d = 1;
+    #10 $finish;
+  end
+
+  always begin
+    #5 clk = ~clk;
+  end
+endmodule
