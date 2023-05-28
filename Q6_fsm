@@ -1,0 +1,84 @@
+module ZeroDetectFSM (
+  input wire clk,
+  input wire sample,
+  output reg detect
+);
+
+  // Define states
+  parameter S0 = 2'b00;
+  parameter S1 = 2'b01;
+  parameter S2 = 2'b10;
+  parameter S3 = 2'b11;
+
+  // Define state register
+  reg [1:0] state;
+
+  // Define next state logic
+  always @(posedge clk) begin
+    case (state)
+      S0: begin
+        if (sample == 1'b0)
+          state <= S1;
+        else
+          state <= S0;
+      end
+      S1: begin
+        if (sample == 1'b0)
+          state <= S2;
+        else
+          state <= S0;
+      end
+      S2: begin
+        if (sample == 1'b0) begin
+          state <= S3;
+          detect <= 1'b1;
+        end else
+          state <= S0;
+      end
+      S3: begin
+        if (sample == 1'b0)
+          state <= S3;
+        else begin
+          state <= S0;
+          detect <= 1'b0;
+        end
+      end
+    endcase
+  end
+endmodule
+
+module testbench;
+  reg clk;
+  reg [2:0] samples;
+  wire detect;
+
+  ZeroDetectFSM dut (
+    .clk(clk),
+    .sample(samples[2]),
+    .detect(detect)
+  );
+
+  initial begin
+    clk = 0;
+    samples = 3'b000;
+    #5 samples = 3'b001;
+    #5 samples = 3'b010;
+    #5 samples = 3'b100;
+    #5 samples = 3'b000;
+    #5 samples = 3'b001;
+    #10 $finish;
+  end
+
+  always begin
+    #5 clk = ~clk;
+  end
+endmodule
+
+//In this code, the FSM has four states (S0, S1, S2, S3) and a state register state to keep track of the current state. The input sample represents the input sequence of samples, and the output detect is set to 1 when more than one occurrence of 0's is detected.
+//The FSM transitions to different states based on the current state and the input sample values.
+
+//The testbench provides a clock signal (clk) and sequences of input samples (samples) to observe the behavior of the FSM. 
+//The FSM will detect the occurrence of more than one 0 in a sequence of 3 samples and set the detect signal accordingly.
+
+//You can simulate this code using a Verilog simulator, such as ModelSim or VCS,
+//to verify the functionality of the FSM for detecting more than one occurrence of 0's in a sequence of 3 samples.
