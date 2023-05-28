@@ -80,5 +80,5 @@ endmodule
 //The testbench provides a clock signal (clk) and sequences of input samples (samples) to observe the behavior of the FSM. 
 //The FSM will detect the occurrence of more than one 0 in a sequence of 3 samples and set the detect signal accordingly.
 
-//You can simulate this code using a Verilog simulator, such as ModelSim or VCS,
+//You can simulate this code using a Verilog simulator
 //to verify the functionality of the FSM for detecting more than one occurrence of 0's in a sequence of 3 samples.
